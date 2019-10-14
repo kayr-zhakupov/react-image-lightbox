@@ -1276,6 +1276,7 @@ class ReactImageLightbox extends Component {
       onAfterOpen,
       imageCrossOrigin,
       reactModalProps,
+      imageComponent,
     } = this.props;
     const {
       zoomLevel,
@@ -1385,8 +1386,9 @@ class ReactImageLightbox extends Component {
           </div>
         );
       } else {
+        const ImageComponent = imageComponent || 'img';
         images.push(
-          <img
+          <ImageComponent
             {...(imageCrossOrigin ? { crossOrigin: imageCrossOrigin } : {})}
             className={`${imageClass} ril__image`}
             onDoubleClick={this.handleImageDoubleClick}
@@ -1719,6 +1721,9 @@ ReactImageLightbox.propTypes = {
 
   // Optional crossOrigin attribute
   imageCrossOrigin: PropTypes.string,
+
+  //
+  imageComponent: PropTypes.elementType,
 
   //-----------------------------
   // Lightbox style
