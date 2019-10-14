@@ -20,6 +20,7 @@ export interface ILightBoxProps {
     animationDuration?: number;
     keyRepeatLimit?: number;
     keyRepeatKeyupBonus?: number;
+    imageComponent?: any;
     imageTitle?: React.ReactNode | string;
     imageCaption?: React.ReactNode | string;
     imageCrossOrigin?: string;
