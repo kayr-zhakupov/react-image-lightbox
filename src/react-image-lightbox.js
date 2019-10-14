@@ -1278,6 +1278,8 @@ class ReactImageLightbox extends Component {
 			reactModalProps,
 			LoadingComponent,
 			ErrorComponent,
+			errorCondition,
+			initialHeight,
 		} = this.props;
 		const {
 			zoomLevel,
@@ -1319,6 +1321,7 @@ class ReactImageLightbox extends Component {
 					...transforms,
 					...bestImageInfo,
 				}),
+				...(initialHeight ? {height: initialHeight + 'px'} : {}),
 			};
 
 			if (zoomLevel > MIN_ZOOM_LEVEL) {
@@ -1330,7 +1333,10 @@ class ReactImageLightbox extends Component {
 				Object.keys(object).some(key => object[key]);
 
 			// when error on one of the loads then push custom error stuff
-			if (bestImageInfo === null && hasTrueValue(loadErrorStatus)) {
+			if (
+				((bestImageInfo === null) && hasTrueValue(loadErrorStatus)) ||
+				(errorCondition && errorCondition(bestImageInfo))
+			) {
 				images.push(
 					<div
 						className={`${imageClass} ril__image ril-errored`}
@@ -1500,7 +1506,9 @@ class ReactImageLightbox extends Component {
 							key="prev"
 							aria-label={this.props.prevLabel}
 							onClick={!this.isAnimating() ? this.requestMovePrev : undefined} // Ignore clicks during animation
-						/>
+						>
+							{this.props.prevButtonChildren}
+						</button>
 					)}
 
 					{nextSrc && (
@@ -1510,7 +1518,9 @@ class ReactImageLightbox extends Component {
 							key="next"
 							aria-label={this.props.nextLabel}
 							onClick={!this.isAnimating() ? this.requestMoveNext : undefined} // Ignore clicks during animation
-						/>
+						>
+							{this.props.nextButtonChildren}
+						</button>
 					)}
 
 					<div // Lightbox toolbar
@@ -1559,7 +1569,9 @@ class ReactImageLightbox extends Component {
 												? this.handleZoomInButtonClick
 												: undefined
 										}
-									/>
+									>
+										{this.props.zoomInButtonChildren}
+									</button>
 								</li>
 							)}
 
@@ -1587,7 +1599,9 @@ class ReactImageLightbox extends Component {
 												? this.handleZoomOutButtonClick
 												: undefined
 										}
-									/>
+									>
+										{this.props.zoomOutButtonChildren}
+									</button>
 								</li>
 							)}
 
@@ -1598,7 +1612,9 @@ class ReactImageLightbox extends Component {
 									aria-label={this.props.closeLabel}
 									className="ril-close ril-toolbar__item__child ril__toolbarItemChild ril__builtinButton ril__closeButton"
 									onClick={!this.isAnimating() ? this.requestClose : undefined} // Ignore clicks during animation
-								/>
+								>
+									{this.props.closeButtonChildren}
+								</button>
 							</li>
 						</ul>
 					</div>
@@ -1763,6 +1779,14 @@ ReactImageLightbox.propTypes = {
 
 	LoadingComponent: PropTypes.elementType,
 	ErrorComponent: PropTypes.elementType,
+	errorCondition: PropTypes.func,
+	initialHeight: PropTypes.number,
+
+	prevButtonChildren: PropTypes.node,
+	nextButtonChildren: PropTypes.node,
+	zoomInButtonChildren: PropTypes.node,
+	zoomOutButtonChildren: PropTypes.node,
+	closeButtonChildren: PropTypes.node,
 };
 
 ReactImageLightbox.defaultProps = {
